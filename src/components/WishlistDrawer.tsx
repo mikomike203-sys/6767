@@ -81,9 +81,15 @@ export default function WishlistDrawer({ isOpen, onClose }: WishlistDrawerProps)
                   <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
                     {product.name}
                   </h3>
-                  <p className="text-lg font-bold mb-3">
-                    KSh {product.price.toLocaleString()}
-                  </p>
+                  <div className="mb-3 space-y-0.5">
+                    <p className="text-sm text-gray-500 line-through">
+                      KSh {product.price.toLocaleString()}
+                    </p>
+                    <p className="text-lg font-bold text-green-600">
+                      KSh {Math.floor(product.price * 0.5).toLocaleString()}
+                      <span className="text-xs text-green-500 ml-1 font-semibold">50% OFF</span>
+                    </p>
+                  </div>
                   {product.in_stock ? (
                     <div className="flex gap-2">
                       <button

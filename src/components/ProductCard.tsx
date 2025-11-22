@@ -23,6 +23,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const displayPrice = product.price ? Math.floor(product.price as any) : 0;
+  const discountedPrice = Math.floor(displayPrice * 0.5);
+  const savings = displayPrice - discountedPrice;
 
   const handleAddToCart = async () => {
     try {
@@ -46,7 +48,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     const whatsappLink = generateWhatsAppLink(
       product.name,
       selectedSize,
-      selectedColor || product.color || ''
+      selectedColor || product.color || '',
+      displayPrice
     );
     window.open(whatsappLink, '_blank');
   };
@@ -85,9 +88,11 @@ export default function ProductCard({ product }: ProductCardProps) {
               <h3 className="font-bold text-sm line-clamp-2">
                 {product.name}
               </h3>
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-bold">KSh {displayPrice.toLocaleString()}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium line-through opacity-70">KSh {displayPrice.toLocaleString()}</span>
+                <span className="text-sm font-bold text-green-400">KSh {discountedPrice.toLocaleString()}</span>
               </div>
+              <div className="text-xs text-green-300 font-semibold">50% OFF - Save KSh {savings.toLocaleString()}</div>
             </div>
           </div>
         )}
@@ -105,8 +110,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-1">
-          <span className="text-sm font-bold text-white">KSh {displayPrice.toLocaleString()}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium line-through text-white/60">KSh {displayPrice.toLocaleString()}</span>
+          <span className="text-sm font-bold text-white">KSh {discountedPrice.toLocaleString()}</span>
+          <span className="text-xs font-bold text-green-400">50% OFF</span>
         </div>
 
         <div className="space-y-1">

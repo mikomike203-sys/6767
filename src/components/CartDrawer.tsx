@@ -15,17 +15,22 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const handleCheckout = () => {
     if (items.length === 0) return;
 
+    let totalOriginal = 0;
     const orderDetails = items
       .map(item => {
+        const itemOriginal = item.product.price * item.quantity;
+        const itemDiscounted = Math.floor(itemOriginal * 0.5);
+        totalOriginal += itemOriginal;
         let line = `${item.product.name} (Qty: ${item.quantity})`;
         if (item.size) line += ` - Size: ${item.size}`;
         if (item.color) line += ` - Color: ${item.color}`;
-        line += ` - KSh ${(item.product.price * item.quantity).toLocaleString()}`;
+        line += `\n  Original: KSh ${itemOriginal.toLocaleString()} | 50% OFF: KSh ${itemDiscounted.toLocaleString()}`;
         return line;
       })
-      .join('\n');
+      .join('\n\n');
 
-    const message = `Hi Eddjos Collections! I'd like to place an order:\n\n${orderDetails}\n\nTotal: KSh ${totalAmount.toLocaleString()}\n\nPlease confirm availability and delivery details.`;
+    const totalSavings = totalOriginal - totalAmount;
+    const message = `Hi Eddjos Collections! I'd like to place an order:\n\n${orderDetails}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\nOriginal Total: KSh ${totalOriginal.toLocaleString()}\n50% Discount: -KSh ${totalSavings.toLocaleString()}\nFinal Total: KSh ${totalAmount.toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPlease confirm availability and delivery details.`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
@@ -120,18 +125,34 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="text-sm font-semibold mt-2">
-                      KSh {(item.product.price * item.quantity).toLocaleString()}
-                    </p>
+                    <div className="mt-2 space-y-0.5">
+                      <p className="text-xs text-gray-500 line-through">
+                        KSh {(item.product.price * item.quantity).toLocaleString()}
+                      </p>
+                      <p className="text-sm font-semibold text-green-600">
+                        KSh {Math.floor((item.product.price * item.quantity) * 0.5).toLocaleString()}
+                        <span className="text-xs text-green-500 ml-1">50% OFF</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="border-t border-gray-200 p-6 space-y-4">
-              <div className="flex items-center justify-between text-lg font-bold">
-                <span>Total:</span>
-                <span>KSh {totalAmount.toLocaleString()}</span>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center justify-between text-gray-600">
+                  <span>Original Total:</span>
+                  <span className="line-through">KSh {items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between text-green-600 font-semibold">
+                  <span>50% Discount:</span>
+                  <span>-KSh {(items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0) - totalAmount).toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between text-lg font-bold border-t pt-2">
+                  <span>Final Total:</span>
+                  <span className="text-green-600">KSh {totalAmount.toLocaleString()}</span>
+                </div>
               </div>
               <button
                 onClick={handleCheckout}
