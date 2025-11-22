@@ -24,10 +24,10 @@ export default function Footer() {
             <div className="space-y-2">
               <p className="text-sm text-gray-400 mb-1">WhatsApp:</p>
               <a
-                href="https://wa.me/254793832286"
+                href="https://wa.me/254740685488"
                 className="text-green-400 hover:text-green-300 transition-colors inline-block"
               >
-                +254 793 832 286
+                +254 740685488
               </a>
             </div>
 
