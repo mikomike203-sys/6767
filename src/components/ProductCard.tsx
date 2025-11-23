@@ -56,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div
-      className="relative bg-[#ff3b30] rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+      className="relative bg-gray-400 rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >

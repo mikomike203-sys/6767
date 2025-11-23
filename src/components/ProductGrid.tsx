@@ -159,11 +159,38 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
           <p className="text-gray-500 text-lg">No products available in this category yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {/* Product Categorization */}
+          <div className="mt-16 pt-12 border-t border-gray-200">
+            <h3 className="text-2xl font-bold mb-8">Browse by Type</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {Array.from(new Set(filteredProducts.map(p => p.name)))
+                .sort()
+                .map((productType) => {
+                  const count = filteredProducts.filter(p => p.name === productType).length;
+                  return (
+                    <button
+                      key={productType}
+                      className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-black transition-all text-left group"
+                    >
+                      <h4 className="font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-2">
+                        {productType}
+                      </h4>
+                      <p className="text-sm text-gray-500 mt-2">
+                        {count} {count === 1 ? 'item' : 'items'}
+                      </p>
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        </>
       )}
     </section>
     </>

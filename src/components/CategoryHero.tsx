@@ -7,12 +7,12 @@ export default function CategoryHero({ category }: CategoryHeroProps) {
     men: {
       title: "Men's Collection",
       subtitle: 'Elevate Your Style with Premium Menswear',
-      image: 'https://i.postimg.cc/prHkRFTz/download-(10).jpg',
+      image: 'https://postimg.cc/ZBQTMf29',
     },
     women: {
       title: "Women's Collection",
       subtitle: 'Timeless Elegance for the Modern Woman',
-      image: 'https://i.postimg.cc/FR97vFv9/download-(11).jpg',
+      image: 'https://postimg.cc/dkYXtGCk',
     },
     unisex: {
       title: 'Unisex Collection',
