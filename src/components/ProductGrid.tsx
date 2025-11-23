@@ -174,35 +174,17 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
                 .sort()
                 .map((productType) => {
                   const count = filteredProducts.filter(p => p.name === productType).length;
-                  const productImage = filteredProducts.find(p => p.name === productType)?.image_url;
                   return (
                     <button
                       key={productType}
-                      className="group overflow-hidden rounded-lg border border-gray-300 hover:border-black transition-all"
+                      className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-black transition-all text-left group"
                     >
-                      {/* Image Rectangle */}
-                      <div className="h-32 bg-gray-200 overflow-hidden">
-                        {productImage ? (
-                          <img
-                            src={productImage}
-                            alt={productType}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      {/* Content Rectangle */}
-                      <div className="p-4 bg-white">
-                        <h4 className="font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-2">
-                          {productType}
-                        </h4>
-                        <p className="text-sm text-gray-500 mt-2">
-                          {count} {count === 1 ? 'item' : 'items'}
-                        </p>
-                      </div>
+                      <h4 className="font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-2">
+                        {productType}
+                      </h4>
+                      <p className="text-sm text-gray-500 mt-2">
+                        {count} {count === 1 ? 'item' : 'items'}
+                      </p>
                     </button>
                   );
                 })}
