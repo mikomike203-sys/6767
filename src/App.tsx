@@ -13,6 +13,7 @@ import WhatsAppFloating from './components/WhatsAppFloating';
 import WhatsAppChannelPopup from './components/WhatsAppChannelPopup';
 import CartDrawer from './components/CartDrawer';
 import WishlistDrawer from './components/WishlistDrawer';
+import DiscountBanner from './components/DiscountBanner';
 
 function App() {
   const [currentCategory, setCurrentCategory] = useState<string>('all');
@@ -39,6 +40,7 @@ function App() {
     <CartProvider>
       <WishlistProvider>
         <div className="min-h-screen bg-gray-50">
+          <DiscountBanner />
           <Header
             onCategoryChange={handleCategoryChange}
             currentCategory={currentCategory}

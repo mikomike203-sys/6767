@@ -46,13 +46,16 @@ export default function Header({ onCategoryChange, currentCategory, onSearch, on
           </button>
 
           <div className="flex-1 flex justify-center md:justify-start">
-            <h1
+            <button
               onClick={() => onCategoryChange('all')}
-              className="text-xl md:text-2xl font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity"
-              style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+              className="hover:opacity-70 transition-opacity"
             >
-              Eddjos Collections .ke
-            </h1>
+              <img
+                src="/pink_blue_funky_clothing_logo.png"
+                alt="Eddjos Collections"
+                className="h-12 w-auto md:h-14"
+              />
+            </button>
           </div>
 
           <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8">

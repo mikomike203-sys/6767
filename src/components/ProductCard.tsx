@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ShoppingBag, Heart } from 'lucide-react';
+import { ShoppingBag, Heart, Eye } from 'lucide-react';
 import { Product } from '../lib/supabase';
 import { generateWhatsAppLink } from '../lib/whatsapp';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import ProductDetailModal from './ProductDetailModal';
 
 interface ProductCardProps {
   product: Product;
@@ -19,6 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     : [product.color || 'Default'];
   const [selectedColor, setSelectedColor] = useState<string>(availableColors[0]);
   const [isHovering, setIsHovering] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -55,11 +57,12 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div
-      className="relative bg-gray-400 rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-    >
+    <>
+      <div
+        className="relative bg-gray-400 rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
       <div className="aspect-square bg-gray-100 overflow-hidden relative">
         <img
           src={product.image_url || 'https://i.postimg.cc/FRkVjK26/316c4caea73bb89b04e80d7d08f6fa57.jpg'}
@@ -80,6 +83,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                 : 'text-gray-700'
             }`}
           />
+        </button>
+
+        <button
+          onClick={() => setShowDetailModal(true)}
+          className="absolute top-2 left-2 p-1.5 bg-white rounded-full shadow-lg hover:scale-110 transition-transform"
+        >
+          <Eye className="w-4 h-4 text-gray-700" />
         </button>
 
         {isHovering && (
@@ -152,5 +162,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
     </div>
+
+      <ProductDetailModal product={showDetailModal ? product : null} onClose={() => setShowDetailModal(false)} />
+    </>
   );
 }
