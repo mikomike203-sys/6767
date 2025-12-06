@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { X, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { generateWhatsAppLink } from '../lib/whatsapp';
+import PaymentMethodSelector, { PaymentMethod } from './PaymentMethodSelector';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,6 +11,7 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, loading, updateQuantity, removeFromCart, totalItems, totalAmount } = useCart();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('card');
 
   if (!isOpen) return null;
 
@@ -30,7 +33,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       .join('\n\n');
 
     const totalSavings = totalOriginal - totalAmount;
-    const message = `Hi Eddjos Collections! I'd like to place an order:\n\n${orderDetails}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\nOriginal Total: KSh ${totalOriginal.toLocaleString()}\n50% Discount: -KSh ${totalSavings.toLocaleString()}\nFinal Total: KSh ${totalAmount.toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPlease confirm availability and delivery details.`;
+    const paymentInfo = selectedPaymentMethod === 'mpesa'
+      ? '\nPayment Method: M-Pesa'
+      : '\nPayment Method: Credit Card';
+
+    const message = `Hi Eddjos Collections! I'd like to place an order:\n\n${orderDetails}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\nOriginal Total: KSh ${totalOriginal.toLocaleString()}\n50% Discount: -KSh ${totalSavings.toLocaleString()}\nFinal Total: KSh ${totalAmount.toLocaleString()}${paymentInfo}\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPlease confirm availability and delivery details.`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
@@ -139,7 +146,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               ))}
             </div>
 
-            <div className="border-t border-gray-200 p-6 space-y-4">
+            <div className="border-t border-gray-200 p-6 space-y-6">
+              <PaymentMethodSelector
+                selectedMethod={selectedPaymentMethod}
+                onSelect={setSelectedPaymentMethod}
+              />
+
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between text-gray-600">
                   <span>Original Total:</span>
@@ -159,7 +171,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 className="w-full py-4 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-5 h-5" />
-                Checkout via WhatsApp
+                Proceed to Checkout
               </button>
               <button
                 onClick={onClose}

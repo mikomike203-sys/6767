@@ -92,9 +92,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Eye className="w-4 h-4 text-gray-700" />
         </button>
 
+        <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg">
+          50% OFF
+        </div>
+
         {isHovering && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent animate-fade-in flex flex-col justify-end p-2">
-            <div className="text-white space-y-1">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/20 animate-fade-in flex flex-col justify-between p-3">
+            <div></div>
+            <div className="text-white space-y-2">
               <h3 className="font-bold text-sm line-clamp-2">
                 {product.name}
               </h3>
@@ -102,7 +107,21 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <span className="text-xs font-medium line-through opacity-70">KSh {displayPrice.toLocaleString()}</span>
                 <span className="text-sm font-bold text-green-400">KSh {discountedPrice.toLocaleString()}</span>
               </div>
-              <div className="text-xs text-green-300 font-semibold">50% OFF - Save KSh {savings.toLocaleString()}</div>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  onClick={handleAddToCart}
+                  className="py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-900 transition-colors flex items-center justify-center gap-1 border border-white/30"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  Add
+                </button>
+                <button
+                  onClick={handleOrder}
+                  className="py-2 bg-green-500 text-white text-xs font-bold rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  WhatsApp
+                </button>
+              </div>
             </div>
           </div>
         )}

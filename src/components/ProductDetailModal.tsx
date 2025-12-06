@@ -1,5 +1,8 @@
-import { X } from 'lucide-react';
+import { useState } from 'react';
+import { X, ShoppingBag, MessageCircle } from 'lucide-react';
 import { Product } from '../lib/supabase';
+import { generateWhatsAppLink } from '../lib/whatsapp';
+import { useCart } from '../contexts/CartContext';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -9,8 +12,36 @@ interface ProductDetailModalProps {
 export default function ProductDetailModal({ product, onClose }: ProductDetailModalProps) {
   if (!product) return null;
 
+  const [selectedSize, setSelectedSize] = useState<string>(
+    product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M'
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product.colors && product.colors.length > 0 ? product.colors[0] : (product.color || 'Default')
+  );
+  const { addToCart } = useCart();
+
   const displayPrice = product.price ? Math.floor(product.price as any) : 0;
   const discountedPrice = Math.floor(displayPrice * 0.5);
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product, 1, selectedSize, selectedColor);
+      alert('Added to cart!');
+      onClose();
+    } catch (error) {
+      alert('Failed to add to cart');
+    }
+  };
+
+  const handleWhatsApp = () => {
+    const whatsappLink = generateWhatsAppLink(
+      product.name,
+      selectedSize,
+      selectedColor,
+      displayPrice
+    );
+    window.open(whatsappLink, '_blank');
+  };
 
   return (
     <>
@@ -99,21 +130,31 @@ export default function ProductDetailModal({ product, onClose }: ProductDetailMo
                   <div className="flex flex-wrap gap-2">
                     {product.sizes && product.sizes.length > 0 ? (
                       product.sizes.map((size) => (
-                        <span
+                        <button
                           key={size}
-                          className="px-3 py-1.5 border border-gray-300 rounded-full text-sm font-medium hover:border-black transition-colors cursor-pointer"
+                          onClick={() => setSelectedSize(size)}
+                          className={`px-3 py-1.5 border rounded-full text-sm font-medium transition-all ${
+                            selectedSize === size
+                              ? 'border-black bg-black text-white'
+                              : 'border-gray-300 hover:border-black'
+                          }`}
                         >
                           {size}
-                        </span>
+                        </button>
                       ))
                     ) : (
                       ['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
-                        <span
+                        <button
                           key={size}
-                          className="px-3 py-1.5 border border-gray-300 rounded-full text-sm font-medium hover:border-black transition-colors cursor-pointer"
+                          onClick={() => setSelectedSize(size)}
+                          className={`px-3 py-1.5 border rounded-full text-sm font-medium transition-all ${
+                            selectedSize === size
+                              ? 'border-black bg-black text-white'
+                              : 'border-gray-300 hover:border-black'
+                          }`}
                         >
                           {size}
-                        </span>
+                        </button>
                       ))
                     )}
                   </div>
@@ -124,12 +165,17 @@ export default function ProductDetailModal({ product, onClose }: ProductDetailMo
                     <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">Available Colors</h3>
                     <div className="flex flex-wrap gap-2">
                       {product.colors.map((color) => (
-                        <span
+                        <button
                           key={color}
-                          className="px-3 py-1.5 border border-gray-300 rounded-full text-sm font-medium hover:border-black transition-colors cursor-pointer"
+                          onClick={() => setSelectedColor(color)}
+                          className={`px-3 py-1.5 border rounded-full text-sm font-medium transition-all ${
+                            selectedColor === color
+                              ? 'border-black bg-black text-white'
+                              : 'border-gray-300 hover:border-black'
+                          }`}
                         >
                           {color}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -137,12 +183,28 @@ export default function ProductDetailModal({ product, onClose }: ProductDetailMo
               </div>
             </div>
 
-            <div className="border-t pt-6">
+            <div className="border-t pt-6 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={handleAddToCart}
+                  className="py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  Add to Cart
+                </button>
+                <button
+                  onClick={handleWhatsApp}
+                  className="py-3 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  WhatsApp
+                </button>
+              </div>
               <button
                 onClick={onClose}
-                className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
               >
-                Back to Shopping
+                Close
               </button>
             </div>
           </div>
