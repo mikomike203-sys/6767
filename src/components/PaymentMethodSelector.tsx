@@ -1,6 +1,6 @@
 import { CreditCard, Smartphone } from 'lucide-react';
 
-export type PaymentMethod = 'card' | 'mpesa';
+export type PaymentMethod = 'card' | 'mpesa' | 'paypal';
 
 interface PaymentMethodSelectorProps {
   selectedMethod: PaymentMethod;
@@ -13,9 +13,15 @@ export default function PaymentMethodSelector({
 }: PaymentMethodSelectorProps) {
   const methods = [
     {
+      id: 'paypal' as PaymentMethod,
+      name: 'PayPal',
+      description: 'Direct card payment',
+      icon: CreditCard,
+    },
+    {
       id: 'card' as PaymentMethod,
       name: 'Credit Card',
-      description: 'Visa, Mastercard, American Express',
+      description: 'Visa, Mastercard, Amex',
       icon: CreditCard,
     },
     {
@@ -31,7 +37,7 @@ export default function PaymentMethodSelector({
       <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
         Payment Method
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-3">
         {methods.map((method) => {
           const Icon = method.icon;
           return (

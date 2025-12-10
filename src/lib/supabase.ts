@@ -82,3 +82,19 @@ export interface WishlistItem {
   product_id: string;
   created_at: string;
 }
+
+export interface Payment {
+  id: string;
+  paypal_order_id: string;
+  customer_name: string;
+  customer_email: string;
+  total_amount: number;
+  original_amount: number;
+  discount_amount: number;
+  items_count: number;
+  session_id: string;
+  status: 'completed' | 'pending' | 'failed';
+  payment_method: string;
+  created_at: string;
+  updated_at: string;
+}

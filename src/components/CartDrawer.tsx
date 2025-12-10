@@ -3,6 +3,7 @@ import { X, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { generateWhatsAppLink } from '../lib/whatsapp';
 import PaymentMethodSelector, { PaymentMethod } from './PaymentMethodSelector';
+import PayPalButton from './PayPalButton';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -11,12 +12,14 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, loading, updateQuantity, removeFromCart, totalItems, totalAmount } = useCart();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('card');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('paypal');
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   if (!isOpen) return null;
 
   const handleCheckout = () => {
-    if (items.length === 0) return;
+    if (items.length === 0 || selectedPaymentMethod === 'paypal') return;
 
     let totalOriginal = 0;
     const orderDetails = items
@@ -42,6 +45,20 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     const whatsappLink = `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
     window.open(whatsappLink, '_blank');
+  };
+
+  const handlePayPalSuccess = () => {
+    setPaymentSuccess(true);
+    setTimeout(() => {
+      onClose();
+      setPaymentSuccess(false);
+      setSelectedPaymentMethod('paypal');
+    }, 2000);
+  };
+
+  const handlePayPalError = (error: string) => {
+    setPaymentError(error);
+    setTimeout(() => setPaymentError(null), 5000);
   };
 
   return (
@@ -166,19 +183,49 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <span className="text-green-600">KSh {totalAmount.toLocaleString()}</span>
                 </div>
               </div>
-              <button
-                onClick={handleCheckout}
-                className="w-full py-4 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                Proceed to Checkout
-              </button>
-              <button
-                onClick={onClose}
-                className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Continue Shopping
-              </button>
+
+              {paymentError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                  {paymentError}
+                </div>
+              )}
+
+              {paymentSuccess && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 font-medium">
+                  Payment successful! Closing cart...
+                </div>
+              )}
+
+              {selectedPaymentMethod === 'paypal' ? (
+                <>
+                  <PayPalButton
+                    onSuccess={handlePayPalSuccess}
+                    onError={handlePayPalError}
+                  />
+                  <button
+                    onClick={onClose}
+                    className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Continue Shopping
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleCheckout}
+                    className="w-full py-4 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    Proceed to Checkout
+                  </button>
+                  <button
+                    onClick={onClose}
+                    className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Continue Shopping
+                  </button>
+                </>
+              )}
             </div>
           </>
         )}
